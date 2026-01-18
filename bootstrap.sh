@@ -18,6 +18,7 @@ usage() {
   --install        启用安装/更新逻辑（需要 git；安装 CLI 需要 brew）
   --skip-omz       安装模式下跳过 OMZ/主题/插件
   --skip-brew      安装模式下跳过 brew 包安装
+  --skip-docker    安装模式下跳过 docker cask（避免下载/交互）
   --setup-fzf      生成 ~/.fzf.zsh（如果存在 brew 的 fzf install 脚本）
   -h, --help       显示帮助
 EOF
@@ -57,6 +58,7 @@ DO_INSTALL=0
 DO_LINK_ONLY=0
 SKIP_OMZ=0
 SKIP_BREW=0
+SKIP_DOCKER=0
 DO_SETUP_FZF=0
 
 parse_args() {
@@ -66,6 +68,7 @@ parse_args() {
       --link-only|link-only) DO_LINK_ONLY=1; shift ;;
       --skip-omz) SKIP_OMZ=1; shift ;;
       --skip-brew) SKIP_BREW=1; shift ;;
+      --skip-docker) SKIP_DOCKER=1; shift ;;
       --setup-fzf) DO_SETUP_FZF=1; shift ;;
       -h|--help) usage; exit 0 ;;
       *)
@@ -110,6 +113,18 @@ brew_install_cask() {
   else
     warn "跳过安装 cask $cask（未安装 brew）"
   fi
+}
+
+docker_desktop_exists() {
+  # 如果用户不是通过 brew 安装的 Docker Desktop，brew 无法感知；
+  # 这里用系统侧的存在性判断来避免重复下载。
+  if [[ -d "/Applications/Docker.app" || -d "$HOME/Applications/Docker.app" ]]; then
+    return 0
+  fi
+  if command -v open >/dev/null 2>&1 && open -Ra Docker >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
 }
 
 git_clone_or_update() {
@@ -159,7 +174,13 @@ install_cli_tools() {
   brew_install yazi
 
   # Docker：补全会自动读取 ~/.docker/completions。Docker Desktop 更常见（带 daemon）。
-  brew_install_cask docker || true
+  if [[ "$SKIP_DOCKER" -ne 1 ]]; then
+    if docker_desktop_exists; then
+      log "已检测到 Docker Desktop（非 brew 也可），跳过 brew cask docker"
+    else
+      brew_install_cask docker || true
+    fi
+  fi
 
   # fzf 的 ~/.fzf.zsh 生成放到 --setup-fzf 显式触发，避免默认改动用户环境
 }
