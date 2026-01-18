@@ -2,6 +2,8 @@
 
 这个仓库用于管理我的开发环境配置（目前以 zsh 为主），通过拆分模块避免单个配置文件膨胀。
 
+> 说明：本仓库默认面向 **macOS + Apple Silicon（Homebrew 在 /opt/homebrew）**。
+
 ## 目录结构
 
 ```
