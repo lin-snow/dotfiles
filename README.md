@@ -81,3 +81,15 @@ source ~/Desktop/Projects/dotfiles/.zshrc
 - `env.zsh`：环境变量与 PATH 管理
 - `tools/`：每个工具单独文件，便于增删维护
 - `completions.zsh`：统一处理 `compinit`，避免重复初始化
+
+## 建议安装
+
+- Oh My Zsh: https://github.com/ohmyzsh/ohmyzsh
+- p10k: https://github.com/romkatv/powerlevel10k
+- zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
+- zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
+- z: https://github.com/agkozak/zsh-z
+- yazi: https://github.com/sxyazi/yazi
+- fzf: https://github.com/junegunn/fzf
+- fnm: https://github.com/Schniz/fnm
+- kubectl: https://github.com/kubernetes/kubectl
