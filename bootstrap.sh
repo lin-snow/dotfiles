@@ -62,8 +62,8 @@ DO_SETUP_FZF=0
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --install) DO_INSTALL=1; shift ;;
-      --link-only) DO_LINK_ONLY=1; shift ;;
+      --install|install) DO_INSTALL=1; shift ;;
+      --link-only|link-only) DO_LINK_ONLY=1; shift ;;
       --skip-omz) SKIP_OMZ=1; shift ;;
       --skip-brew) SKIP_BREW=1; shift ;;
       --setup-fzf) DO_SETUP_FZF=1; shift ;;
