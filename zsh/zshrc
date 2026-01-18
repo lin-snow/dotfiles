@@ -1,0 +1,25 @@
+# Main zsh entry for dotfiles
+ZSH_DOTDIR="${${(%):-%N}:A:h}"
+
+source_if_exists() {
+  [[ -f "$1" ]] && source "$1"
+}
+
+source_if_exists "$ZSH_DOTDIR/env.zsh"
+source_if_exists "$ZSH_DOTDIR/omz.zsh"
+source_if_exists "$ZSH_DOTDIR/aliases.zsh"
+
+if [[ -d "$ZSH_DOTDIR/functions" ]]; then
+  for file in "$ZSH_DOTDIR"/functions/*.zsh; do
+    source_if_exists "$file"
+  done
+fi
+
+if [[ -d "$ZSH_DOTDIR/tools" ]]; then
+  for file in "$ZSH_DOTDIR"/tools/*.zsh; do
+    source_if_exists "$file"
+  done
+fi
+
+source_if_exists "$ZSH_DOTDIR/completions.zsh"
+source_if_exists "$ZSH_DOTDIR/p10k.zsh"
