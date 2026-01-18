@@ -22,11 +22,13 @@ dotfiles/
     omz.zsh
     p10k.zsh
   .zshrc
+  bootstrap.sh
+  Brewfile
 ```
 
 ## 使用方式
 
-1. 把仓库放在本机任意路径（示例：`~/Desktop/Projects/dotfiles`）。
+1. 把仓库放在本机任意路径（推荐：`~/.dotfiles`）。
 2. 入口为仓库内的 `.zshrc`，它会继续 source `zsh/zshrc`。
 3. 重新加载 shell：
    - `source ~/.zshrc`
@@ -36,16 +38,30 @@ dotfiles/
 
 ### 首次接入
 
-推荐通过软链接管 `~/.zshrc`：
+推荐通过软链接管理 `~/.zshrc`：
 
 ```
-ln -s ~/Desktop/Projects/dotfiles/.zshrc ~/.zshrc
+ln -s ~/.dotfiles/.zshrc ~/.zshrc
 ```
 
 如果你已有 `~/.zshrc` 且不想替换，也可以在原文件中追加一行：
 
 ```
-source ~/Desktop/Projects/dotfiles/.zshrc
+source ~/.dotfiles/.zshrc
+```
+
+也可以一键执行（推荐，默认只应用配置/不做安装）：
+
+```
+cd ~/.dotfiles
+./bootstrap.sh
+exec zsh -l
+```
+
+如需安装/更新（可选）：
+
+```
+./bootstrap.sh --install
 ```
 
 ### 依赖与插件
@@ -64,7 +80,7 @@ source ~/Desktop/Projects/dotfiles/.zshrc
 
 - `go` 不存在时，不会追加 `GOPATH/bin`
 - `kubectl` 不存在时，不会加载补全
-- `fnm` 目录不存在时，不会加载 `fnm env`
+- `fnm` 不存在时，不会加载 `fnm env`
 - `fzf` 文件不存在时，不会 source
 
 需要注意的是：函数/alias 仍会定义（如 `y`、`k`），但只有在实际调用时才会因缺少 CLI 报错，不影响启动。
@@ -82,14 +98,22 @@ source ~/Desktop/Projects/dotfiles/.zshrc
 - `tools/`：每个工具单独文件，便于增删维护
 - `completions.zsh`：统一处理 `compinit`，避免重复初始化
 
-## 建议安装
+## 建议安装（已安装可忽略）
 
 - Oh My Zsh: https://github.com/ohmyzsh/ohmyzsh
 - p10k: https://github.com/romkatv/powerlevel10k
 - zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
 - zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
-- z: https://github.com/agkozak/zsh-z
+- z: https://github.com/rupa/z
 - yazi: https://github.com/sxyazi/yazi
 - fzf: https://github.com/junegunn/fzf
 - fnm: https://github.com/Schniz/fnm
 - kubectl: https://github.com/kubernetes/kubectl
+- go: https://go.dev/
+- docker: https://www.docker.com/products/docker-desktop/
+
+如果你使用 Homebrew，也可以（可选）：
+
+```
+brew bundle --file ~/.dotfiles/Brewfile
+```

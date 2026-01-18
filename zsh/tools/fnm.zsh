@@ -1,4 +1,3 @@
-FNM_PATH="/opt/homebrew/opt/fnm/bin"
-if [[ -d "$FNM_PATH" ]]; then
+if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env)"
 fi

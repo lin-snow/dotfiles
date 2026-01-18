@@ -8,4 +8,6 @@ plugins=(
   z
 )
 
-source "$ZSH/oh-my-zsh.sh"
+if [[ -d "$ZSH" && -f "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
+fi
