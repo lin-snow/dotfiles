@@ -25,10 +25,14 @@
 #
 # Example aliases
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# ========== Prompt Switch ==========
+# starship | p10k
+: "${PROMPT_ENGINE:=starship}"
+
+# Enable Powerlevel10k instant prompt (only when using p10k).
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ "$PROMPT_ENGINE" == "p10k" ]] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -37,6 +41,3 @@ DOTFILES_DIR="${${(%):-%N}:A:h}"
 if [[ -f "$DOTFILES_DIR/zsh/zshrc" ]]; then
   source "$DOTFILES_DIR/zsh/zshrc"
 fi
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

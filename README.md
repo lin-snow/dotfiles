@@ -71,10 +71,17 @@ exec zsh -l
 当前配置默认使用：
 
 - Oh My Zsh：`$HOME/.oh-my-zsh`
-- p10k 主题：`powerlevel10k/powerlevel10k`
+- 提示符：默认 **Starship**（可用 `PROMPT_ENGINE` 切换到 p10k）
 - 插件：`git`、`zsh-autosuggestions`、`zsh-syntax-highlighting`、`z`
 
 如需增删插件，编辑 `zsh/omz.zsh` 中的 `plugins` 列表即可。
+
+提示符切换：
+
+```
+export PROMPT_ENGINE=starship   # starship | p10k
+exec zsh -l
+```
 
 ### 缺少 CLI 会怎样
 
@@ -107,6 +114,7 @@ exec zsh -l
 - zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
 - zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
 - z: https://github.com/rupa/z
+- starship: https://starship.rs/
 - yazi: https://github.com/sxyazi/yazi
 - fzf: https://github.com/junegunn/fzf
 - fnm: https://github.com/Schniz/fnm

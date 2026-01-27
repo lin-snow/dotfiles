@@ -87,6 +87,11 @@ install_homebrew_hint() {
   return 1
 }
 
+brew_cmd() {
+  # Hide brew environment hints and avoid automatic cleanup noise.
+  env HOMEBREW_NO_ENV_HINTS=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew "$@"
+}
+
 brew_install() {
   local pkg="$1"
   if command -v brew >/dev/null 2>&1; then
@@ -94,7 +99,7 @@ brew_install() {
       log "已安装（brew）：$pkg"
     else
       log "安装（brew）：$pkg"
-      brew install "$pkg"
+      brew_cmd install "$pkg"
     fi
   else
     warn "跳过安装 $pkg（未安装 brew）"
@@ -108,7 +113,7 @@ brew_install_cask() {
       log "已安装（brew cask）：$cask"
     else
       log "安装（brew cask）：$cask"
-      brew install --cask "$cask"
+      brew_cmd install --cask "$cask"
     fi
   else
     warn "跳过安装 cask $cask（未安装 brew）"
@@ -169,6 +174,7 @@ install_cli_tools() {
 
   brew_install fzf
   brew_install fnm
+  brew_install starship
   brew_install kubectl
   brew_install go
   brew_install yazi
