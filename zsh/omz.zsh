@@ -1,5 +1,10 @@
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+if [[ "${PROMPT_ENGINE:-starship}" == "p10k" ]]; then
+  ZSH_THEME="powerlevel10k/powerlevel10k"
+else
+  # Starship 会自己初始化 prompt，这里不要让 OMZ 主题接管 prompt
+  ZSH_THEME=""
+fi
 
 plugins=(
   git
