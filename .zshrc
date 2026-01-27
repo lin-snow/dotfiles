@@ -42,5 +42,7 @@ if [[ -f "$DOTFILES_DIR/zsh/zshrc" ]]; then
   source "$DOTFILES_DIR/zsh/zshrc"
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# p10k 配置只在使用 p10k 时加载（Starship 模式下避免覆盖 prompt）
+if [[ "$PROMPT_ENGINE" == "p10k" ]]; then
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+fi
