@@ -7,6 +7,7 @@ brew "starship"
 brew "kubectl"
 brew "go"
 brew "yazi"
+brew "fastfetch"
 
 # Apps
 cask "docker"

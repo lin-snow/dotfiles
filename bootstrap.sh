@@ -178,6 +178,7 @@ install_cli_tools() {
   brew_install kubectl
   brew_install go
   brew_install yazi
+  brew_install fastfetch
 
   # Docker：补全会自动读取 ~/.docker/completions。Docker Desktop 更常见（带 daemon）。
   if [[ "$SKIP_DOCKER" -ne 1 ]]; then
