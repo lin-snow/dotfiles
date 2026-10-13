@@ -1,5 +1,3 @@
-tap "homebrew/bundle"
-
 # CLI
 brew "fzf"
 brew "fnm"
