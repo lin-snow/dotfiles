@@ -10,9 +10,9 @@ die() { printf "ERROR: %s\n" "$*" >&2; exit 1; }
 usage() {
   cat <<'EOF'
 用法：
-  ./bootstrap.sh                 # 默认：仅应用配置（链接 ~/.zshrc），不做任何安装/更新
+  ./bootstrap.sh                 # 默认：仅应用配置（链接 ~/.zshrc、ghostty 配置/CLI），不做任何安装/更新
   ./bootstrap.sh --install       # 额外：安装/更新 OMZ/插件 + 按 Brewfile 安装 CLI
-  ./bootstrap.sh --link-only     # 仅链接 ~/.zshrc（不做其它事）
+  ./bootstrap.sh --link-only     # 仅做软链（不做其它事）
 
 可选项：
   --install        启用安装/更新逻辑（需要 git；安装 CLI 需要 brew）
@@ -40,20 +40,34 @@ backup_if_exists() {
   fi
 }
 
-symlink_zshrc() {
-  local target="${HOME}/.zshrc"
-  local source="${DOTFILES_DIR}/.zshrc"
+link_file() {
+  local source="$1"
+  local target="$2"
 
-  [[ -f "$source" ]] || die "找不到：$source"
+  [[ -e "$source" ]] || die "找不到：$source"
 
   if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$source" ]]; then
     log "已是正确链接：$target -> $source"
     return 0
   fi
 
+  mkdir -p "$(dirname "$target")"
   backup_if_exists "$target"
   ln -s "$source" "$target"
   log "已链接：$target -> $source"
+}
+
+link_dotfiles() {
+  link_file "${DOTFILES_DIR}/.zshrc" "${HOME}/.zshrc"
+  link_file "${DOTFILES_DIR}/ghostty/config" "${HOME}/.config/ghostty/config"
+
+  # Ghostty 的 cask 不会把 CLI 放进 PATH；bundle 内路径稳定，升级后照样有效
+  local ghostty_bin="/Applications/Ghostty.app/Contents/MacOS/ghostty"
+  if [[ -x "$ghostty_bin" ]]; then
+    link_file "$ghostty_bin" "${HOME}/.local/bin/ghostty"
+  else
+    warn "未找到 Ghostty.app，跳过 ghostty CLI 软链（brew install --cask ghostty）"
+  fi
 }
 
 DO_INSTALL=0
@@ -187,7 +201,7 @@ install_docker_completion_if_possible() {
 main() {
   parse_args "$@"
   log "dotfiles: ${DOTFILES_DIR}"
-  symlink_zshrc
+  link_dotfiles
 
   if [[ "$DO_LINK_ONLY" -eq 1 ]]; then
     log ""

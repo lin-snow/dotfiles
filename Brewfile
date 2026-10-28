@@ -14,4 +14,5 @@ brew "fastfetch"
 
 # Apps
 cask "docker"
+cask "ghostty"
 

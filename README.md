@@ -26,6 +26,8 @@ dotfiles/
       omlx.zsh
     omz.zsh
     prompt.zsh
+  ghostty/
+    config
   .zshrc
   bootstrap.sh
   Brewfile
@@ -91,9 +93,29 @@ starship preset nerd-font-symbols -o ~/.config/starship.toml
 
 ### 终端与字体
 
-图标依赖 Nerd Font。当前机器使用 **Maple Mono NF CN**（手动装在 `~/Library/Fonts`，
-VS Code 的 `editor.fontFamily` 也指向它）。它不在 `Brewfile` 里，重装机器会丢图标，
-可补一行 cask 纳入管理：
+终端：**Ghostty 1.4.0**（`brew install --cask ghostty`）。配置在 `ghostty/config`，
+由 `bootstrap.sh` 软链到 `~/.config/ghostty/config`；cask 不会把 CLI 放进 `PATH`，
+bootstrap 会把 `Ghostty.app/Contents/MacOS/ghostty` 软链到 `~/.local/bin/ghostty`。
+
+当前配置要点：
+
+- 字体 `Maple Mono NF CN` 14pt（图标依赖 Nerd Font，见下）
+- 主题 Catppuccin：`light:Catppuccin Latte,dark:Catppuccin Mocha`，跟随 macOS 明暗自动切换
+- 轻透明：`background-opacity = 0.92` + `background-blur = 20`
+- `macos-option-as-alt = true`，zsh 里 `alt+b/f/d` 按词移动/删除可用
+- 全局热键 `cmd+反引号` 唤出/收起下拉终端（Quick Terminal），首次使用需在
+  系统设置里授予 Ghostty 相应权限
+- `super+shift+,` 重载配置，`super+,` 打开配置
+
+改完校验：
+
+```
+ghostty +validate-config     # 解析校验（无输出即通过）
+ghostty +show-config         # 查看实际生效值
+ghostty +list-themes         # 挑主题
+```
+
+字体不在 `Brewfile` 里时，换机器会丢图标，可补一行 cask 纳入管理：
 
 ```
 brew "font-maple-mono-nf-cn"
@@ -102,9 +124,8 @@ brew "font-maple-mono-nf-cn"
 `eza --icons=auto`、Starship、yazi 都依赖这套字形；缺字体时表现为方框/乱码，不影响功能。
 
 yazi 的图片预览按终端能力自动选择协议，`ya env` 可查看实际使用的 driver（`Kgp`/`Iip`/`Sixel`…）。
-VS Code 终端走 iTerm2 inline images（`Iip`），能显示但拿不到终端像素尺寸，预览大小只受
-`preview.max_width`/`max_height` 约束。
-
+Ghostty 走 Kitty 图形协议（`Kgp`）；VS Code 终端走 iTerm2 inline images（`Iip`），能显示但
+拿不到终端像素尺寸，预览大小只受 `preview.max_width`/`max_height` 约束。
 
 ### 缺少 CLI 会怎样
 

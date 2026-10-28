@@ -1,0 +1,27 @@
+# Ghostty 终端配置
+# 本文件由 ~/.dotfiles 管理，~/.config/ghostty/config 指向它。
+# 可用键：ghostty +show-config --docs；校验：ghostty +validate-config；改完重载：super+shift+,
+
+font-family = Maple Mono NF CN
+font-size = 14
+
+# Catppuccin：跟随 macOS 明暗自动切换
+theme = light:Catppuccin Mocha,dark:Catppuccin Mocha
+
+# Option 当作 Alt：zsh 里 alt+b / alt+f / alt+d 按词移动、删除可用
+macos-option-as-alt = true
+
+# 轻微透明 + 背景模糊（数值为模糊半径，仅 macOS）
+background-opacity = 0.92
+background-blur = 20
+
+window-padding-x = 10
+window-padding-y = 10
+window-padding-balance = true
+
+# 打字时隐藏鼠标指针
+mouse-hide-while-typing = true
+
+# 全局热键（任何应用内）从屏幕顶部唤出/收起下拉终端
+quick-terminal-position = top
+keybind = global:cmd+grave_accent=toggle_quick_terminal
