@@ -153,6 +153,25 @@ Ghostty 走 Kitty 图形协议（`Kgp`）；VS Code 终端走 iTerm2 inline imag
 
 `Ctrl-T` 文件选择器带预览：目录用 `eza` 列表，文本文件用 `bat` 高亮前 200 行。
 
+### yazi 预览依赖
+
+按"零/低依赖优先"取舍，已装：
+
+| 工具 | 用途 | 说明 |
+| --- | --- | --- |
+| `fd` / `rg` / `fzf` / `zoxide` | 文件搜索、子树跳转、历史目录 | 已有（见上） |
+| `sevenzip`（`7zz`） | 压缩包解压与预览 | 0 依赖；yazi 优先调用 `7zz`，回退 `7z` |
+| `jq` | JSON 预览 | 1 依赖 |
+| `resvg` | SVG 预览 | 0 依赖 |
+| `poppler`（`pdftoppm`） | PDF 预览 | 27 个依赖，但体积可控 |
+| MapleMono NF | Nerd Font 图标 | 已在 `~/Library/Fonts`，无需另装 |
+
+未装、需要时再加：
+
+- `ffmpeg`：视频缩略图（11 个依赖，本体较大）
+- `ImageMagick`：HEIC / JPEG XL / 字体预览（14 个依赖）
+- `xclip` / `wl-clipboard` / `xsel`：Linux 专用；macOS 用系统 `pbcopy`/`pbpaste`，yazi 原生支持
+
 ### 常见操作
 
 - 修改环境变量：编辑 `zsh/env.zsh`

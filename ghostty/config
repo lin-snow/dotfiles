@@ -16,8 +16,8 @@ font-size = 14
 # 自定义主题名（~/.config/ghostty/themes/<名字>），或主题文件的绝对路径。
 # 写成 light:X,dark:Y 时跟随 macOS 明暗自动切换；
 # 这里明暗都指定 Mocha，等于固定深色配色，不随系统变。
-# 想跟随系统就改成：light:Catppuccin Latte,dark:Catppuccin Mocha
-theme = light:Catppuccin Mocha,dark:Catppuccin Mocha
+# 想跟随系统就改成：light:Catppuccin Latte,dark:Catppuccin Frappe
+theme = light:Catppuccin Frappe,dark:Catppuccin Frappe
 
 # macOS 没有独立的 Alt 键，Option 默认会输入特殊字符（如 option-b = ∫），
 # shell 里 alt+b/f/d 按词移动就废了。true 让 Option 当 Alt 交给终端程序。
