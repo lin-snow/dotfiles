@@ -22,4 +22,4 @@ if [[ -d "$ZSH_DOTDIR/tools" ]]; then
 fi
 
 source_if_exists "$ZSH_DOTDIR/completions.zsh"
-source_if_exists "$ZSH_DOTDIR/p10k.zsh"
+source_if_exists "$ZSH_DOTDIR/prompt.zsh"

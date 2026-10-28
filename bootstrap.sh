@@ -129,9 +129,8 @@ install_oh_my_zsh_and_plugins() {
 
   git_clone_or_update "https://github.com/ohmyzsh/ohmyzsh.git" "$zsh_dir"
 
-  mkdir -p "${zsh_custom}/themes" "${zsh_custom}/plugins"
+  mkdir -p "${zsh_custom}/plugins"
 
-  git_clone_or_update "https://github.com/romkatv/powerlevel10k.git" "${zsh_custom}/themes/powerlevel10k"
   git_clone_or_update "https://github.com/zsh-users/zsh-autosuggestions.git" "${zsh_custom}/plugins/zsh-autosuggestions"
   git_clone_or_update "https://github.com/zsh-users/zsh-syntax-highlighting.git" "${zsh_custom}/plugins/zsh-syntax-highlighting"
 }

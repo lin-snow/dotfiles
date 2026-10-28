@@ -26,7 +26,7 @@ dotfiles/
       modern-cli.zsh
       omlx.zsh
     omz.zsh
-    p10k.zsh
+    prompt.zsh
   .zshrc
   bootstrap.sh
   Brewfile
@@ -78,17 +78,22 @@ exec zsh -l
 当前配置默认使用：
 
 - Oh My Zsh：`$HOME/.oh-my-zsh`
-- 提示符：默认 **Starship**（可用 `PROMPT_ENGINE` 切换到 p10k）
-- 插件：`git`、`zsh-autosuggestions`、`zsh-syntax-highlighting`
+- 提示符：**Starship** 单引擎（`zsh/prompt.zsh`），OMZ 主题置空（`ZSH_THEME=""`）避免两个 prompt 抢 `PROMPT`
+- 插件：`git`、`zsh-autosuggestions`、`zsh-syntax-highlighting`（`z` 已移除，由 zoxide 提供）
 
 如需增删插件，编辑 `zsh/omz.zsh` 中的 `plugins` 列表即可。
 
-提示符切换：
+提示符定制写在 `~/.config/starship.toml`（不存在时用 starship 内置默认配置）：
 
 ```
-export PROMPT_ENGINE=starship   # starship | p10k
-exec zsh -l
+starship config          # 打印当前生效配置
+starship preset nerd-font-symbols -o ~/.config/starship.toml
 ```
+
+如需换回 p10k：`brew install romkatv/powerlevel10k/powerlevel10k`（或 `git clone` 到
+`$ZSH_CUSTOM/themes/powerlevel10k`）→ 运行 `p10k configure` 生成 `~/.p10k.zsh` →
+在 `zsh/prompt.zsh` 里改成 source `~/.p10k.zsh`，并把 `zsh/omz.zsh` 的 `ZSH_THEME` 设为
+`powerlevel10k/powerlevel10k`。
 
 ### 缺少 CLI 会怎样
 
@@ -133,7 +138,6 @@ exec zsh -l
 ## 建议安装（已安装可忽略）
 
 - Oh My Zsh: https://github.com/ohmyzsh/ohmyzsh
-- p10k: https://github.com/romkatv/powerlevel10k
 - zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
 - zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
 - zoxide（替代 OMZ `z` 插件）: https://github.com/ajeetdsouza/zoxide
