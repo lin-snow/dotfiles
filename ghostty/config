@@ -1,27 +1,61 @@
 # Ghostty 终端配置
 # 本文件由 ~/.dotfiles 管理，~/.config/ghostty/config 指向它。
-# 可用键：ghostty +show-config --docs；校验：ghostty +validate-config；改完重载：super+shift+,
+# 改完在窗口里按 super+shift+, 重载（部分键需完全重启，见各自说明）。
+# 可用键：ghostty +show-config --docs；校验：ghostty +validate-config；生效值：ghostty +show-config
+# 注意：Ghostty 只认整行注释，别把 # 写在值后面。
 
+# 主字体。可用 `ghostty +list-fonts` 查系统里的字体名；
+# 本行可重复写多次，表示缺字时的回退字体链（比如再补一个带中文的字形）。
 font-family = Maple Mono NF CN
+
+# 字号，单位 pt（不是 px）。高分屏 1pt=2px，所以写 13.5 会得到 27px 这种奇数像素。
+# 运行中改只影响还没手动缩放过的终端。
 font-size = 14
 
-# Catppuccin：跟随 macOS 明暗自动切换
+# 配色主题。可以是内置主题名（`ghostty +list-themes` 查看）、
+# 自定义主题名（~/.config/ghostty/themes/<名字>），或主题文件的绝对路径。
+# 写成 light:X,dark:Y 时跟随 macOS 明暗自动切换；
+# 这里明暗都指定 Mocha，等于固定深色配色，不随系统变。
+# 想跟随系统就改成：light:Catppuccin Latte,dark:Catppuccin Mocha
 theme = light:Catppuccin Mocha,dark:Catppuccin Mocha
 
-# Option 当作 Alt：zsh 里 alt+b / alt+f / alt+d 按词移动、删除可用
+# macOS 没有独立的 Alt 键，Option 默认会输入特殊字符（如 option-b = ∫），
+# shell 里 alt+b/f/d 按词移动就废了。true 让 Option 当 Alt 交给终端程序。
+# 代价：之后 Option 组合打不出特殊字符。
 macos-option-as-alt = true
 
-# 轻微透明 + 背景模糊（数值为模糊半径，仅 macOS）
-background-opacity = 0.92
-background-blur = 20
+# 背景不透明度：1 = 完全不透明，0 = 全透明（越界会被夹到 0~1）。
+# macOS 下进入原生全屏时透明会失效；改这个值需要完全退出并重启 Ghostty。
+background-opacity = 0.9
 
+# 背景模糊，只在 background-opacity < 1 时生效。
+# 这里用 macOS 26+ 的原生玻璃效果（macos-glass-regular = 标准，macos-glass-clear = 更透）。
+# 想改用 Ghostty 自己的模糊算法：整数 = 模糊强度（越大越糊，过大会掉帧）；true = 20；false/0 = 不模糊。
+# 系统若开了「降低透明度」，玻璃效果会被系统关掉。
+background-blur = macos-glass-regular
+
+# 左右内边距，单位 pt。写 `10,20` 可分别设置左/右。
+# 运行中改只影响新开的窗口/标签，老窗口不重排。
 window-padding-x = 10
-window-padding-y = 10
+
+# 上下内边距，单位 pt。写 `10,20` 可分别设置上/下。
+window-padding-y = 5
+
+# 窗口尺寸除不尽单元格时会剩几个像素，这个开关决定余量怎么分：
+# false = 左上角贴边、余量堆在右/下；true = 四边均分但限制顶部空白；
+# equal = 四边完全均分（1.4.0 起支持）。
 window-padding-balance = true
 
-# 打字时隐藏鼠标指针
+# 打字瞬间隐藏鼠标指针，一动鼠标就回来（macOS 上新开窗口/标签/分屏也会先显示）。
 mouse-hide-while-typing = true
 
-# 全局热键（任何应用内）从屏幕顶部唤出/收起下拉终端
+# 下拉终端（Quick Terminal）从屏幕哪个边弹出：top / bottom / left / right / center。
+# 注意：Ghostty 默认没有给 Quick Terminal 绑快捷键，必须配合下面的 keybind；
+# macOS 下改这个位置需要完全重启 Ghostty。
 quick-terminal-position = top
+
+# 快捷键，格式 trigger=action（修饰键用 + 连；action 列表见 `ghostty +list-actions`）。
+#   global: 前缀 = 全局生效，即使 Ghostty 不在前台（隐含 all:）。
+#   macOS 需要「系统设置 → 隐私与安全性 → 辅助功能」里勾选 Ghostty，否则不生效。
+#   cmd+grave_accent 就是 cmd+`，grave_accent 会被规范化成 backquote。
 keybind = global:cmd+grave_accent=toggle_quick_terminal
