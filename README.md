@@ -30,6 +30,8 @@ dotfiles/
   .zshrc
   bootstrap.sh
   Brewfile
+  fastfetch/
+    config.jsonc
 ```
 
 ## 使用方式
@@ -120,6 +122,17 @@ starship preset nerd-font-symbols -o ~/.config/starship.toml
 | `zoxide` | `z` | `z <关键字>` 跳转，`zi` 交给 fzf 交互选择；OMZ 的 `z` 插件已移除 |
 
 `Ctrl-T` 文件选择器带预览：目录用 `eza` 列表，文本文件用 `bat` 高亮前 200 行。
+
+### fastfetch 主题
+
+主题由仓库内的 `fastfetch/config.jsonc` 管理（不依赖 Homebrew 的示例 preset，升级不会覆盖），
+`zsh/tools/fastfetch.zsh` 会把 `fastfetch` alias 到 `--config <该文件>`。
+
+- 换 logo：改 `logo.source`（`fastfetch --list-logos` 查看，如 `Apple`、`macOS`、`none`）
+- 换小/大 logo：改 `logo.type`（`small` / `normal`）与 `logo.padding`
+- 增删信息行：编辑 `modules` 数组；key 颜色用 `keyColor`，对齐由 `display.key.width` 控制
+- 临时试配置：`fastfetch --config ~/.dotfiles/fastfetch/config.jsonc`
+- 用命令行参数覆盖单次输出：`fastfetch --logo normal`
 
 ### 常见操作
 
