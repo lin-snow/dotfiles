@@ -1,29 +1,4 @@
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
+# zsh 入口；~/.zshrc 应为本文件的 symlink（见 bootstrap.sh）
 
 # ========== Prompt Switch ==========
 # starship | p10k
@@ -38,11 +13,6 @@ fi
 
 # Load dotfiles zsh config
 DOTFILES_DIR="${${(%):-%N}:A:h}"
-if [[ -f "$DOTFILES_DIR/zsh/zshrc" ]]; then
-  source "$DOTFILES_DIR/zsh/zshrc"
-fi
-
-# p10k 配置只在使用 p10k 时加载（Starship 模式下避免覆盖 prompt）
-if [[ "$PROMPT_ENGINE" == "p10k" ]]; then
-  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-fi
+# ~/.zshrc 本应是本文件的 symlink；若被第三方安装器覆盖成普通副本，:A 会停在 $HOME，这里回退
+[[ -d "$DOTFILES_DIR/zsh" ]] || DOTFILES_DIR="$HOME/.dotfiles"
+[[ -f "$DOTFILES_DIR/zsh/zshrc" ]] && source "$DOTFILES_DIR/zsh/zshrc"

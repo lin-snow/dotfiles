@@ -16,11 +16,15 @@ dotfiles/
       yazi.zsh
     completions.zsh
     tools/
+      bun.zsh
       fnm.zsh
       fzf.zsh
       kubectl.zsh
       docker.zsh
       go.zsh
+      fastfetch.zsh
+      modern-cli.zsh
+      omlx.zsh
     omz.zsh
     p10k.zsh
   .zshrc
@@ -66,13 +70,16 @@ exec zsh -l
 ./bootstrap.sh --install
 ```
 
+`--install` 的包列表唯一来源是仓库内 `Brewfile`（等价于 `brew bundle install --file=... --no-upgrade`，
+只补缺失项，不隐式升级已安装的包）。本机已有 Docker Desktop / OrbStack / Rancher Desktop 时自动跳过 `docker` cask。
+
 ### 依赖与插件
 
 当前配置默认使用：
 
 - Oh My Zsh：`$HOME/.oh-my-zsh`
 - 提示符：默认 **Starship**（可用 `PROMPT_ENGINE` 切换到 p10k）
-- 插件：`git`、`zsh-autosuggestions`、`zsh-syntax-highlighting`、`z`
+- 插件：`git`、`zsh-autosuggestions`、`zsh-syntax-highlighting`
 
 如需增删插件，编辑 `zsh/omz.zsh` 中的 `plugins` 列表即可。
 
@@ -91,8 +98,23 @@ exec zsh -l
 - `kubectl` 不存在时，不会加载补全
 - `fnm` 不存在时，不会加载 `fnm env`
 - `fzf` 文件不存在时，不会 source
+- `fd` / `eza` / `bat` / `zoxide` 不存在时，对应 alias 与初始化整体跳过
 
 需要注意的是：函数/alias 仍会定义（如 `y`、`k`），但只有在实际调用时才会因缺少 CLI 报错，不影响启动。
+
+### 现代 CLI 工具
+
+由 `zsh/tools/modern-cli.zsh` 与 `zsh/tools/fzf.zsh` 配置：
+
+| 工具 | 替代 | 说明 |
+| --- | --- | --- |
+| `eza` | `ls` | `ls`/`ll`/`la`/`lt`（树形）替换为带图标、Git 状态、目录优先的版本 |
+| `bat` | `cat` | 语法高亮 + 行号；`cat` 仅在交互式 shell 中被 alias，脚本用原生 `command cat` |
+| `fd` | `find` | 命令本身即用；作为 fzf 默认候选来源（遵守 `.gitignore`） |
+| `ripgrep` (`rg`) | `grep -r` | 命令本身即用 |
+| `zoxide` | `z` | `z <关键字>` 跳转，`zi` 交给 fzf 交互选择；OMZ 的 `z` 插件已移除 |
+
+`Ctrl-T` 文件选择器带预览：目录用 `eza` 列表，文本文件用 `bat` 高亮前 200 行。
 
 ### 常见操作
 
@@ -103,9 +125,10 @@ exec zsh -l
 
 ## 约定
 
-- `env.zsh`：环境变量与 PATH 管理
-- `tools/`：每个工具单独文件，便于增删维护
-- `completions.zsh`：统一处理 `compinit`，避免重复初始化
+- `env.zsh`：环境变量与 PATH 管理（`typeset -gU path` 去重；`-g` 不可省，否则在本仓库的 `source_if_exists` 函数里声明成局部变量，PATH 改动会被丢弃）
+- `tools/`：每个工具单独文件，便于增删维护；每个文件都要能在对应 CLI 缺失时安全跳过
+- `completions.zsh`：统一处理 `compinit`，并在 compinit 之后加载依赖 `compdef` 的补全（bun、kubectl）
+- kubectl 补全缓存在 `${XDG_CACHE_HOME:-~/.cache}/zsh/kubectl-completion.zsh`，kubectl 更新后（可执行文件比缓存新）自动重建；首次启动多 ~100ms，之后省掉这段开销
 
 ## 建议安装（已安装可忽略）
 
@@ -113,10 +136,15 @@ exec zsh -l
 - p10k: https://github.com/romkatv/powerlevel10k
 - zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
 - zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
-- z: https://github.com/rupa/z
+- zoxide（替代 OMZ `z` 插件）: https://github.com/ajeetdsouza/zoxide
 - starship: https://starship.rs/
 - yazi: https://github.com/sxyazi/yazi
 - fzf: https://github.com/junegunn/fzf
+- fd: https://github.com/sharkdp/fd
+- eza: https://github.com/eza-community/eza
+- bat: https://github.com/sharkdp/bat
+- ripgrep: https://github.com/BurntSushi/ripgrep
+- zoxide: https://github.com/ajeetdsouza/zoxide
 - fnm: https://github.com/Schniz/fnm
 - kubectl: https://github.com/kubernetes/kubectl
 - go: https://go.dev/

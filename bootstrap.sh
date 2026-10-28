@@ -11,16 +11,18 @@ usage() {
   cat <<'EOF'
 用法：
   ./bootstrap.sh                 # 默认：仅应用配置（链接 ~/.zshrc），不做任何安装/更新
-  ./bootstrap.sh --install       # 额外：安装/更新 OMZ/插件 + 安装 CLI（brew）
+  ./bootstrap.sh --install       # 额外：安装/更新 OMZ/插件 + 按 Brewfile 安装 CLI
   ./bootstrap.sh --link-only     # 仅链接 ~/.zshrc（不做其它事）
 
 可选项：
   --install        启用安装/更新逻辑（需要 git；安装 CLI 需要 brew）
   --skip-omz       安装模式下跳过 OMZ/主题/插件
-  --skip-brew      安装模式下跳过 brew 包安装
+  --skip-brew      安装模式下跳过 Brewfile 安装
   --skip-docker    安装模式下跳过 docker cask（避免下载/交互）
   --setup-fzf      生成 ~/.fzf.zsh（如果存在 brew 的 fzf install 脚本）
   -h, --help       显示帮助
+
+包列表的唯一来源是仓库内 Brewfile（`brew bundle --file=...`）。
 EOF
 }
 
@@ -87,48 +89,18 @@ install_homebrew_hint() {
   return 1
 }
 
-brew_cmd() {
-  # Hide brew environment hints and avoid automatic cleanup noise.
-  env HOMEBREW_NO_ENV_HINTS=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew "$@"
-}
-
-brew_install() {
-  local pkg="$1"
-  if command -v brew >/dev/null 2>&1; then
-    if brew list --formula "$pkg" >/dev/null 2>&1; then
-      log "已安装（brew）：$pkg"
-    else
-      log "安装（brew）：$pkg"
-      brew_cmd install "$pkg"
+docker_engine_available() {
+  # Docker Desktop / OrbStack / Rancher Desktop 等自带 daemon 的发行版；
+  # brew 只能感知自己装的 cask，这里用系统侧存在性判断避免重复下载。
+  local app
+  for app in Docker OrbStack "Rancher Desktop"; do
+    if [[ -d "/Applications/${app}.app" || -d "$HOME/Applications/${app}.app" ]]; then
+      return 0
     fi
-  else
-    warn "跳过安装 $pkg（未安装 brew）"
-  fi
-}
-
-brew_install_cask() {
-  local cask="$1"
-  if command -v brew >/dev/null 2>&1; then
-    if brew list --cask "$cask" >/dev/null 2>&1; then
-      log "已安装（brew cask）：$cask"
-    else
-      log "安装（brew cask）：$cask"
-      brew_cmd install --cask "$cask"
+    if command -v open >/dev/null 2>&1 && open -Ra "$app" >/dev/null 2>&1; then
+      return 0
     fi
-  else
-    warn "跳过安装 cask $cask（未安装 brew）"
-  fi
-}
-
-docker_desktop_exists() {
-  # 如果用户不是通过 brew 安装的 Docker Desktop，brew 无法感知；
-  # 这里用系统侧的存在性判断来避免重复下载。
-  if [[ -d "/Applications/Docker.app" || -d "$HOME/Applications/Docker.app" ]]; then
-    return 0
-  fi
-  if command -v open >/dev/null 2>&1 && open -Ra Docker >/dev/null 2>&1; then
-    return 0
-  fi
+  done
   return 1
 }
 
@@ -172,24 +144,19 @@ install_cli_tools() {
     return 0
   fi
 
-  brew_install fzf
-  brew_install fnm
-  brew_install starship
-  brew_install kubectl
-  brew_install go
-  brew_install yazi
-  brew_install fastfetch
+  local brewfile="${DOTFILES_DIR}/Brewfile"
+  [[ -f "$brewfile" ]] || die "找不到：$brewfile"
 
-  # Docker：补全会自动读取 ~/.docker/completions。Docker Desktop 更常见（带 daemon）。
-  if [[ "$SKIP_DOCKER" -ne 1 ]]; then
-    if docker_desktop_exists; then
-      log "已检测到 Docker Desktop（非 brew 也可），跳过 brew cask docker"
-    else
-      brew_install_cask docker || true
-    fi
+  # Docker 有 GUI 发行版（Docker Desktop / OrbStack）时不装 cask，避免重复下载。
+  if [[ "$SKIP_DOCKER" -eq 1 ]] || docker_engine_available; then
+    export HOMEBREW_BUNDLE_CASK_SKIP="docker"
+    log "跳过 brew cask docker（已检测到本地 Docker 发行版）"
   fi
 
-  # fzf 的 ~/.fzf.zsh 生成放到 --setup-fzf 显式触发，避免默认改动用户环境
+  log "安装 brew 包（缺失项）：$brewfile"
+  # --no-upgrade：只补缺失项，不隐式升级已安装的包
+  env HOMEBREW_NO_ENV_HINTS=1 HOMEBREW_NO_INSTALL_CLEANUP=1 \
+    brew bundle install --file "$brewfile" --no-upgrade
 }
 
 setup_fzf_if_requested() {

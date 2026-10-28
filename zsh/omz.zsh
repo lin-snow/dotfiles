@@ -6,11 +6,11 @@ else
   ZSH_THEME=""
 fi
 
+# 不启用 z 插件：z/zi 由 zoxide 提供（见 tools/modern-cli.zsh）
 plugins=(
   git
   zsh-autosuggestions
   zsh-syntax-highlighting
-  z
 )
 
 if [[ -d "$ZSH" && -f "$ZSH/oh-my-zsh.sh" ]]; then
